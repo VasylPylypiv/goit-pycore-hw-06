@@ -28,23 +28,31 @@ class Record:
         self.phones.append(Phone(phone))
 
     def remove_phone(self, phone):
-        self.phones = [p for p in self.phones if p.value != phone]
+        phone_to_remove = self.find_phone(phone)
+        if phone_to_remove:
+            self.phones.remove(phone_to_remove)
+        else:
+            raise ValueError(f"Phone {phone} not found")
 
     def edit_phone(self, old_phone, new_phone):
-        for p in self.phones:
-            if p.value == old_phone:
-                p.value = new_phone
-                break
+        phone_to_edit = self.find_phone(old_phone)
+        if phone_to_edit:
+            # Валідація для нового телефону
+            if len(new_phone) != 10 or not new_phone.isdigit():
+                raise ValueError("Phone number must be 10 digits")
+            phone_to_edit.value = new_phone
+        else:
+            raise ValueError(f"Phone {old_phone} not found")
 
     def find_phone(self, phone):
         for p in self.phones:
             if p.value == phone:
                 return p
         return None
-    
-    # реалізація класу
+
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        phone_numbers = "; ".join(str(p) for p in self.phones)
+        return f"Contact name: {self.name.value}, phones: {phone_numbers}"
 
 class AddressBook(UserDict):
     def add_record(self, record):
@@ -56,7 +64,7 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
-            
+
 # Створення нової адресної книги
 book = AddressBook()
 
