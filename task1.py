@@ -39,6 +39,12 @@ class Record:
             raise ValueError(f"Phone {phone} not found")
 
     def edit_phone(self, old_phone, new_phone):
+        # Перевіряємо новий телефон через клас Phone
+        try:
+            Phone(new_phone)  # Якщо номер невалідний, згенерується помилка
+        except ValueError:
+            raise ValueError(f"New phone number '{new_phone}' is invalid.")
+        
         phone_to_edit = self.find_phone(old_phone)
         if phone_to_edit:
             phone_to_edit.value = new_phone
